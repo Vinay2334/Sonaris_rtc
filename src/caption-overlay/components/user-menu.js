@@ -89,7 +89,7 @@
       planRow.append(planText, ui.badge(s.plan.name, "outline"));
       popup.appendChild(planRow);
       // Upgrade points at the plan one step above the current one in
-      // catalog order (hidden on the top plan): Free -> Pro -> Studio.
+      // catalog order (hidden on the top plan): Free -> Starter -> Pro -> Studio.
       const target = userStore.getUpgradeTarget?.(s.plan.name) ?? null;
       if (target) {
         const upgrade = ui.el("div", "um-stack");

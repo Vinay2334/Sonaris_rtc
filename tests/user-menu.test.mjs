@@ -1,6 +1,6 @@
 // Upgrade button follows the live plan catalog: one step above current
-// (Free -> Pro -> Studio), hidden on the top plan. Plain node + vm with a
-// minimal DOM, mirroring sign-in-gate.test.mjs.
+// (Free -> Starter -> Pro -> Studio), hidden on the top plan. Plain node
+// + vm with a minimal DOM, mirroring sign-in-gate.test.mjs.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -63,8 +63,9 @@ function stubFetch(url, opts = {}) {
     return Promise.resolve(
       ok({
         plans: [
-          { id: "studio", name: "Studio", price_label: "$29 / month", tagline: "For teams", price_monthly_usd: 29, display_order: 2, is_featured: false },
-          { id: "pro", name: "Pro", price_label: "$12 / month", tagline: "For daily viewers", price_monthly_usd: 12, display_order: 1, is_featured: true },
+          { id: "studio", name: "Studio", price_label: "$50 / month", tagline: "For all-day power users", price_monthly_usd: 50, display_order: 3, is_featured: false },
+          { id: "pro", name: "Pro", price_label: "$27 / month", tagline: "For daily meetings, streams & learners", price_monthly_usd: 27, display_order: 2, is_featured: true },
+          { id: "starter", name: "Starter", price_label: "$10 / month", tagline: "For casual viewing and study", price_monthly_usd: 10, display_order: 1, is_featured: false },
           { id: "free", name: "Free", price_label: "$0 / month", tagline: "For trying Captify", price_monthly_usd: 0, display_order: 0, is_featured: false },
         ],
       }),
@@ -116,10 +117,17 @@ async function openMenuOnPlan(NS, plan) {
   return menu;
 }
 
-test("Free sees Upgrade to Pro", async () => {
+test("Free sees Upgrade to Starter", async () => {
   const { NS } = loadMenu();
   const menu = await openMenuOnPlan(NS, "Free");
   assert.ok(menu.popup.classList.contains("is-open"));
+  assert.deepEqual(buttonLabels(menu), ["Sign out", "Upgrade to Starter"]);
+  menu.destroy();
+});
+
+test("Starter sees Upgrade to Pro", async () => {
+  const { NS } = loadMenu();
+  const menu = await openMenuOnPlan(NS, "Starter");
   assert.deepEqual(buttonLabels(menu), ["Sign out", "Upgrade to Pro"]);
   menu.destroy();
 });

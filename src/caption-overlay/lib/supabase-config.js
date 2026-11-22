@@ -30,7 +30,7 @@
   // loadRemoteConfig below become no-ops so a stale storage cache can't
   // point the overlay at the hosted backend mid-dev. Flip back to false
   // before publishing, together with the module flag.
-  NS.captifyConfig.DEV_FORCE_LOCAL_BACKEND = true;
+  NS.captifyConfig.DEV_FORCE_LOCAL_BACKEND = false;
 
   NS.captifyConfig.quotaUrl = function () {
     return `${NS.captifyConfig.BACKEND_BASE_URL.replace(/\/$/, "")}/api/v1/me/quota`;

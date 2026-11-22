@@ -24,7 +24,7 @@ export const REMOTE_CONFIG_TIMEOUT_MS = 8000;
 // backend everywhere: loadRemoteConfig returns null and every resolve*
 // helper falls through to its localhost fallback. No hosted fetch, no cache
 // read. Flip back to false before publishing.
-export const DEV_FORCE_LOCAL_BACKEND = true;
+export const DEV_FORCE_LOCAL_BACKEND = false;
 
 // Canonical baked-in defaults: the localhost backend every caller falls
 // back to when no remote document is available (dev mode, offline first

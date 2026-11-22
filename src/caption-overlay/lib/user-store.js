@@ -19,14 +19,14 @@
   const DEFAULT_STATE = Object.freeze({
     signedIn: false,
     user: null, // { id, name, email, initials }
-    quota: { usedSeconds: 0, limitSeconds: 6000, remainingSeconds: 6000 },
+    quota: { usedSeconds: 0, limitSeconds: 2400, remainingSeconds: 2400 },
     plan: { name: "Free", priceLabel: "$0 / month", tagline: "For trying Captify" },
   });
 
   const PRO_PLAN = Object.freeze({
-    name: "Pro",
-    priceLabel: "$12 / month",
-    tagline: "Unlimited minutes, priority speed",
+    name: "Starter",
+    priceLabel: "$10 / month",
+    tagline: "For casual viewing and study",
   });
 
   let state = structuredClone(DEFAULT_STATE);
@@ -272,8 +272,8 @@
   // null when already on the top plan (the menu hides the button then).
   // Unknown current plan: offer the cheapest paid plan (parallels the
   // pricing page, where every paid plan is an upgrade from unknown).
-  // No catalog yet: legacy fallback — Pro for everyone not already on
-  // it, exactly like before.
+  // No catalog yet: legacy fallback — Starter for everyone not already
+  // on it, exactly like before.
   function upgradeTargetFor(planName, catalog = planCatalog) {
     if (!catalog?.length) {
       return planName === PRO_PLAN.name ? null : { ...PRO_PLAN };

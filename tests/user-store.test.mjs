@@ -31,8 +31,9 @@ function stubFetch(url, opts = {}) {
     return Promise.resolve(
       ok({
         plans: [
-          { id: "studio", name: "Studio", price_label: "$29 / month", tagline: "For teams", price_monthly_usd: 29, display_order: 2, is_featured: false },
-          { id: "pro", name: "Pro", price_label: "$12 / month", tagline: "For daily viewers", price_monthly_usd: 12, display_order: 1, is_featured: true },
+          { id: "studio", name: "Studio", price_label: "$50 / month", tagline: "For all-day power users", price_monthly_usd: 50, display_order: 3, is_featured: false },
+          { id: "pro", name: "Pro", price_label: "$27 / month", tagline: "For daily meetings, streams & learners", price_monthly_usd: 27, display_order: 2, is_featured: true },
+          { id: "starter", name: "Starter", price_label: "$10 / month", tagline: "For casual viewing and study", price_monthly_usd: 10, display_order: 1, is_featured: false },
           { id: "free", name: "Free", price_label: "$0 / month", tagline: "For trying Captify", price_monthly_usd: 0, display_order: 0, is_featured: false },
         ],
       }),
@@ -59,8 +60,9 @@ const norm = (v) => JSON.parse(JSON.stringify(v));
 
 const WORKER_PLANS = [
   { id: "free", name: "Free", price_label: "$0 / month", tagline: "For trying Captify", price_monthly_usd: 0, display_order: 0, is_featured: false },
-  { id: "pro", name: "Pro", price_label: "$12 / month", tagline: "For daily viewers", price_monthly_usd: 12, display_order: 1, is_featured: true },
-  { id: "studio", name: "Studio", price_label: "$29 / month", tagline: "For teams", price_monthly_usd: 29, display_order: 2, is_featured: false },
+  { id: "starter", name: "Starter", price_label: "$10 / month", tagline: "For casual viewing and study", price_monthly_usd: 10, display_order: 1, is_featured: false },
+  { id: "pro", name: "Pro", price_label: "$27 / month", tagline: "For daily meetings, streams & learners", price_monthly_usd: 27, display_order: 2, is_featured: true },
+  { id: "studio", name: "Studio", price_label: "$50 / month", tagline: "For all-day power users", price_monthly_usd: 50, display_order: 3, is_featured: false },
 ];
 
 function loadUserStore({ withGoogle = false, withWorker = false, workerQuotaStatus = 200 } = {}) {
@@ -135,7 +137,7 @@ test("hamburger icon and default guest state", () => {
   assert.equal(s.signedIn, false);
   assert.equal(s.user, null);
   assert.equal(s.plan.name, "Free");
-  assert.equal(s.quota.limitSeconds, 6000);
+  assert.equal(s.quota.limitSeconds, 2400);
 });
 
 test("quota minutes derive from billed seconds", () => {
@@ -207,9 +209,11 @@ test("upgrade target is one step above current in catalog order", async () => {
   await store.load();
   await store.signInWithPassword("ada@captify.local", "secret");
   await store.refreshPlans();
-  assert.deepEqual(norm(store.getUpgradeTarget("Free")), { name: "Pro" });
+  assert.deepEqual(norm(store.getUpgradeTarget("Free")), { name: "Starter" });
+  assert.deepEqual(norm(store.getUpgradeTarget()), { name: "Starter" });
+  store.applyQuota({ used_seconds: 120, limit_seconds: 10800, remaining_seconds: 10680, plan: "Starter" });
   assert.deepEqual(norm(store.getUpgradeTarget()), { name: "Pro" });
-  store.applyQuota({ used_seconds: 120, limit_seconds: 60000, remaining_seconds: 59880, plan: "Pro" });
+  store.applyQuota({ used_seconds: 120, limit_seconds: 32400, remaining_seconds: 32280, plan: "Pro" });
   assert.deepEqual(norm(store.getUpgradeTarget()), { name: "Studio" });
   store.applyQuota({ used_seconds: 120, limit_seconds: 240000, remaining_seconds: 239880, plan: "Studio" });
   assert.equal(store.getUpgradeTarget(), null);
@@ -221,11 +225,11 @@ test("plan change after catalog load re-enriches without refetch", async () => {
   await store.signInWithPassword("ada@captify.local", "secret");
   await store.refreshPlans();
   assert.equal(store.getState().plan.priceLabel, "$0 / month");
-  store.applyQuota({ used_seconds: 120, limit_seconds: 60000, remaining_seconds: 59880, plan: "Pro" });
-  assert.equal(store.getState().plan.priceLabel, "$12 / month");
-  assert.equal(store.getState().plan.tagline, "For daily viewers");
-  store.applyQuota({ used_seconds: 120, limit_seconds: 240000, remaining_seconds: 239880, plan: "Studio" });
-  assert.equal(store.getState().plan.priceLabel, "$29 / month");
+  store.applyQuota({ used_seconds: 120, limit_seconds: 32400, remaining_seconds: 32280, plan: "Pro" });
+  assert.equal(store.getState().plan.priceLabel, "$27 / month");
+  assert.equal(store.getState().plan.tagline, "For daily meetings, streams & learners");
+  store.applyQuota({ used_seconds: 120, limit_seconds: 43200, remaining_seconds: 43080, plan: "Studio" });
+  assert.equal(store.getState().plan.priceLabel, "$50 / month");
   assert.deepEqual(norm(store.getUpgradeTarget()), null);
 });
 
@@ -234,19 +238,19 @@ test("unknown current plan offers the cheapest paid plan", async () => {
   await store.load();
   await store.signInWithPassword("ada@captify.local", "secret");
   await store.refreshPlans();
-  store.applyQuota({ used_seconds: 0, limit_seconds: 6000, remaining_seconds: 6000, plan: "Custom" });
-  assert.deepEqual(norm(store.getUpgradeTarget()), { name: "Pro" });
+  store.applyQuota({ used_seconds: 0, limit_seconds: 2400, remaining_seconds: 2400, plan: "Custom" });
+  assert.deepEqual(norm(store.getUpgradeTarget()), { name: "Starter" });
 });
 
 test("catalog enriches the displayed price and tagline", async () => {
   const { store } = loadUserStore();
   await store.load();
   await store.signInWithPassword("ada@captify.local", "secret");
-  store.applyQuota({ used_seconds: 120, limit_seconds: 60000, remaining_seconds: 59880, plan: "Pro" });
+  store.applyQuota({ used_seconds: 120, limit_seconds: 32400, remaining_seconds: 32280, plan: "Pro" });
   assert.equal(store.getState().plan.priceLabel, "$0 / month");
   await store.refreshPlans();
-  assert.equal(store.getState().plan.priceLabel, "$12 / month");
-  assert.equal(store.getState().plan.tagline, "For daily viewers");
+  assert.equal(store.getState().plan.priceLabel, "$27 / month");
+  assert.equal(store.getState().plan.tagline, "For daily meetings, streams & learners");
 });
 
 test("quota and plans load through the worker relay (no direct fetch)", async () => {
@@ -259,7 +263,7 @@ test("quota and plans load through the worker relay (no direct fetch)", async ()
   const s = store.getState();
   assert.equal(s.signedIn, true);
   assert.equal(s.plan.name, "Pro");
-  assert.equal(s.plan.priceLabel, "$12 / month");
+  assert.equal(s.plan.priceLabel, "$27 / month");
   assert.deepEqual(norm(store.getUpgradeTarget()), { name: "Studio" });
 });
 
@@ -270,10 +274,10 @@ test("relay 401 signs out like a direct 401", async () => {
   assert.equal(store.getState().signedIn, false);
 });
 
-test("no catalog yet keeps the legacy Pro fallback", () => {
+test("no catalog yet keeps the legacy Starter fallback", () => {
   const { store } = loadUserStore();
-  assert.equal(store.getUpgradeTarget("Free").name, "Pro");
-  assert.equal(store.getUpgradeTarget("Pro"), null);
+  assert.equal(store.getUpgradeTarget("Free").name, "Starter");
+  assert.equal(store.getUpgradeTarget("Starter"), null);
 });
 
 test("upgrade opens pricing with the account attached", async () => {
