@@ -1,6 +1,6 @@
-// Auth gate + transport/session logic for the caption overlay (classic script: no imports/exports; shares window.CaptifyOverlay).
+// Auth gate + transport/session logic for the caption overlay (classic script: no imports/exports; shares window.SonarisOverlay).
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
   const S = NS.state;
   const C = NS.constants;
 

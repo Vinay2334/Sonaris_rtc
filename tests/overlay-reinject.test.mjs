@@ -211,7 +211,7 @@ function makeHarness() {
     window,
     listeners,
     loadAll,
-    hostCount: () => document.__hostsById(window.CaptifyOverlay.constants.CONTAINER_ID).length,
+    hostCount: () => document.__hostsById(window.SonarisOverlay.constants.CONTAINER_ID).length,
   };
 }
 
@@ -225,7 +225,7 @@ test("re-injecting the overlay scripts in one document keeps a single overlay", 
   // onUpdated complete): must not orphan the first host or reset state.
   h.loadAll();
   assert.ok(
-    h.window.CaptifyOverlay.state.container,
+    h.window.SonarisOverlay.state.container,
     "overlay state still references the container after re-injection",
   );
   assert.equal(h.hostCount(), 1, "re-injection leaves exactly one overlay host");
@@ -240,12 +240,12 @@ test("re-injecting the overlay scripts in one document keeps a single overlay", 
 test("closing the overlay then reopening shows it again", async () => {
   const h = makeHarness();
   h.loadAll();
-  const NS = h.window.CaptifyOverlay;
+  const NS = h.window.SonarisOverlay;
 
   // Close button path: teardown runs, then the fade-out timer clears refs.
   NS.closeAndTeardown(false);
   await new Promise((r) => setTimeout(r, 350));
-  assert.equal(h.window.__captifyCaptionInjected, false, "teardown allows re-injection");
+  assert.equal(h.window.__sonarisCaptionInjected, false, "teardown allows re-injection");
   assert.equal(h.hostCount(), 0, "teardown removes the overlay host");
 
   // Reopen (extension icon click): fresh injection + caption-show reveal.

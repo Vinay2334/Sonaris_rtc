@@ -3,15 +3,15 @@
 // this gate only explains the block and opens that page in a new window,
 // keeping the small overlay free of cramped inputs.
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
 
   function createSignInGate() {
     const { ui, icons, userStore } = NS;
 
-    const el = ui.el("div", "captify-auth-gate");
+    const el = ui.el("div", "sonaris-auth-gate");
     el.setAttribute("role", "alert");
 
-    const title = ui.el("div", "auth-gate-title", "Sign in to use Captify");
+    const title = ui.el("div", "auth-gate-title", "Sign in to use Sonaris");
     const message = ui.el(
       "p", "auth-gate-message",
       "Subtitles are off until you sign in. Continue on the sign-in page to start live captions for this tab.",

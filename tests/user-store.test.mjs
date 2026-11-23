@@ -9,7 +9,7 @@ import vm from "node:vm";
 
 const SUPA_USER = {
   id: "user-1",
-  email: "ada@captify.local",
+  email: "ada@sonaris.local",
   user_metadata: { full_name: "Ada Lovelace" },
 };
 
@@ -34,7 +34,7 @@ function stubFetch(url, opts = {}) {
           { id: "studio", name: "Studio", price_label: "$50 / month", tagline: "For all-day power users", price_monthly_usd: 50, display_order: 3, is_featured: false },
           { id: "pro", name: "Pro", price_label: "$27 / month", tagline: "For daily meetings, streams & learners", price_monthly_usd: 27, display_order: 2, is_featured: true },
           { id: "starter", name: "Starter", price_label: "$10 / month", tagline: "For casual viewing and study", price_monthly_usd: 10, display_order: 1, is_featured: false },
-          { id: "free", name: "Free", price_label: "$0 / month", tagline: "For trying Captify", price_monthly_usd: 0, display_order: 0, is_featured: false },
+          { id: "free", name: "Free", price_label: "$0 / month", tagline: "For trying Sonaris", price_monthly_usd: 0, display_order: 0, is_featured: false },
         ],
       }),
     );
@@ -43,7 +43,7 @@ function stubFetch(url, opts = {}) {
     return Promise.resolve(
       ok({
         user_id: "user-1",
-        email: "ada@captify.local",
+        email: "ada@sonaris.local",
         plan: "Free",
         used_seconds: 120,
         limit_seconds: 6000,
@@ -59,7 +59,7 @@ function stubFetch(url, opts = {}) {
 const norm = (v) => JSON.parse(JSON.stringify(v));
 
 const WORKER_PLANS = [
-  { id: "free", name: "Free", price_label: "$0 / month", tagline: "For trying Captify", price_monthly_usd: 0, display_order: 0, is_featured: false },
+  { id: "free", name: "Free", price_label: "$0 / month", tagline: "For trying Sonaris", price_monthly_usd: 0, display_order: 0, is_featured: false },
   { id: "starter", name: "Starter", price_label: "$10 / month", tagline: "For casual viewing and study", price_monthly_usd: 10, display_order: 1, is_featured: false },
   { id: "pro", name: "Pro", price_label: "$27 / month", tagline: "For daily meetings, streams & learners", price_monthly_usd: 27, display_order: 2, is_featured: true },
   { id: "studio", name: "Studio", price_label: "$50 / month", tagline: "For all-day power users", price_monthly_usd: 50, display_order: 3, is_featured: false },
@@ -83,7 +83,7 @@ function loadUserStore({ withGoogle = false, withWorker = false, workerQuotaStat
     runtime: withWorker
       ? { sendMessage: async (msg) => {
           sent.push(msg);
-          if (!msg || msg.type !== "captify-overlay-data") return undefined;
+          if (!msg || msg.type !== "sonaris-overlay-data") return undefined;
           const u = String(msg.url || "");
           if (u.includes("/api/v1/plans")) {
             return { ok: true, status: 200, body: { plans: WORKER_PLANS } };
@@ -94,7 +94,7 @@ function loadUserStore({ withGoogle = false, withWorker = false, workerQuotaStat
             }
             return {
               ok: true, status: 200,
-              body: { user_id: "user-1", email: "ada@captify.local", plan: "Pro", used_seconds: 600, limit_seconds: 60000, remaining_seconds: 59400 },
+              body: { user_id: "user-1", email: "ada@sonaris.local", plan: "Pro", used_seconds: 600, limit_seconds: 60000, remaining_seconds: 59400 },
             };
           }
           return { ok: false, status: 404, body: null };
@@ -128,7 +128,7 @@ function loadUserStore({ withGoogle = false, withWorker = false, workerQuotaStat
   ]) {
     vm.runInContext(readFileSync(new URL(`../src/caption-overlay/${file}`, import.meta.url), "utf8"), context);
   }
-  return { store: window.CaptifyOverlay.userStore, sent, stored, chromeStub, directCalls };
+  return { store: window.SonarisOverlay.userStore, sent, stored, chromeStub, directCalls };
 }
 
 test("hamburger icon and default guest state", () => {
@@ -153,16 +153,16 @@ test("quota minutes derive from billed seconds", () => {
 test("email sign-in flips state, fetches quota, notifies the worker", async () => {
   const { store, sent } = loadUserStore();
   await store.load();
-  await store.signInWithPassword("ada@captify.local", "secret");
+  await store.signInWithPassword("ada@sonaris.local", "secret");
   const s = store.getState();
   assert.equal(s.signedIn, true);
-  assert.equal(s.user.email, "ada@captify.local");
+  assert.equal(s.user.email, "ada@sonaris.local");
   assert.equal(s.user.initials, "AL");
   assert.equal(s.quota.usedSeconds, 120);
   assert.equal(s.quota.remainingSeconds, 5880);
-  // Relay traffic (captify-overlay-data) is internal: the worker contract
+  // Relay traffic (sonaris-overlay-data) is internal: the worker contract
   // is asserted by the relay tests, not here.
-  const actions = sent.filter((m) => m && m.type === "captify-menu-action").map((m) => m.action);
+  const actions = sent.filter((m) => m && m.type === "sonaris-menu-action").map((m) => m.action);
   assert.deepEqual(actions, ["sign-in"]);
 });
 
@@ -178,7 +178,7 @@ test("google sign-in works through the identity flow", async () => {
 test("applyQuota updates the menu numbers live", async () => {
   const { store } = loadUserStore();
   await store.load();
-  await store.signInWithPassword("ada@captify.local", "secret");
+  await store.signInWithPassword("ada@sonaris.local", "secret");
   store.applyQuota({ used_seconds: 300, limit_seconds: 6000, remaining_seconds: 5700, plan: "Free" });
   const s = store.getState();
   assert.equal(s.quota.usedSeconds, 300);
@@ -188,13 +188,13 @@ test("applyQuota updates the menu numbers live", async () => {
 test("sign out clears profile and quota and notifies the worker", async () => {
   const { store, sent } = loadUserStore();
   await store.load();
-  await store.signInWithPassword("ada@captify.local", "secret");
+  await store.signInWithPassword("ada@sonaris.local", "secret");
   await store.signOut();
   const s = store.getState();
   assert.equal(s.signedIn, false);
   assert.equal(s.user, null);
   assert.equal(s.quota.usedSeconds, 0);
-  const actions = sent.filter((m) => m && m.type === "captify-menu-action").map((m) => m.action);
+  const actions = sent.filter((m) => m && m.type === "sonaris-menu-action").map((m) => m.action);
   assert.deepEqual(actions, ["sign-in", "sign-out"]);
 });
 
@@ -207,7 +207,7 @@ test("getState returns a copy callers cannot mutate", () => {
 test("upgrade target is one step above current in catalog order", async () => {
   const { store } = loadUserStore();
   await store.load();
-  await store.signInWithPassword("ada@captify.local", "secret");
+  await store.signInWithPassword("ada@sonaris.local", "secret");
   await store.refreshPlans();
   assert.deepEqual(norm(store.getUpgradeTarget("Free")), { name: "Starter" });
   assert.deepEqual(norm(store.getUpgradeTarget()), { name: "Starter" });
@@ -222,7 +222,7 @@ test("upgrade target is one step above current in catalog order", async () => {
 test("plan change after catalog load re-enriches without refetch", async () => {
   const { store } = loadUserStore();
   await store.load();
-  await store.signInWithPassword("ada@captify.local", "secret");
+  await store.signInWithPassword("ada@sonaris.local", "secret");
   await store.refreshPlans();
   assert.equal(store.getState().plan.priceLabel, "$0 / month");
   store.applyQuota({ used_seconds: 120, limit_seconds: 32400, remaining_seconds: 32280, plan: "Pro" });
@@ -236,7 +236,7 @@ test("plan change after catalog load re-enriches without refetch", async () => {
 test("unknown current plan offers the cheapest paid plan", async () => {
   const { store } = loadUserStore();
   await store.load();
-  await store.signInWithPassword("ada@captify.local", "secret");
+  await store.signInWithPassword("ada@sonaris.local", "secret");
   await store.refreshPlans();
   store.applyQuota({ used_seconds: 0, limit_seconds: 2400, remaining_seconds: 2400, plan: "Custom" });
   assert.deepEqual(norm(store.getUpgradeTarget()), { name: "Starter" });
@@ -245,7 +245,7 @@ test("unknown current plan offers the cheapest paid plan", async () => {
 test("catalog enriches the displayed price and tagline", async () => {
   const { store } = loadUserStore();
   await store.load();
-  await store.signInWithPassword("ada@captify.local", "secret");
+  await store.signInWithPassword("ada@sonaris.local", "secret");
   store.applyQuota({ used_seconds: 120, limit_seconds: 32400, remaining_seconds: 32280, plan: "Pro" });
   assert.equal(store.getState().plan.priceLabel, "$0 / month");
   await store.refreshPlans();
@@ -256,7 +256,7 @@ test("catalog enriches the displayed price and tagline", async () => {
 test("quota and plans load through the worker relay (no direct fetch)", async () => {
   const { store, directCalls } = loadUserStore({ withWorker: true });
   await store.load();
-  await store.signInWithPassword("ada@captify.local", "secret");
+  await store.signInWithPassword("ada@sonaris.local", "secret");
   await store.refreshPlans();
   // Page-context fetches never touch the backend API: only the IdP did.
   assert.ok(directCalls.every((u) => !u.includes("/me/quota") && !u.includes("/api/v1/plans")));
@@ -270,7 +270,7 @@ test("quota and plans load through the worker relay (no direct fetch)", async ()
 test("relay 401 signs out like a direct 401", async () => {
   const { store } = loadUserStore({ withWorker: true, workerQuotaStatus: 401 });
   await store.load();
-  await assert.rejects(store.signInWithPassword("ada@captify.local", "secret"));
+  await assert.rejects(store.signInWithPassword("ada@sonaris.local", "secret"));
   assert.equal(store.getState().signedIn, false);
 });
 
@@ -283,7 +283,7 @@ test("no catalog yet keeps the legacy Starter fallback", () => {
 test("upgrade opens pricing with the account attached", async () => {
   const { store, sent } = loadUserStore();
   await store.load();
-  await store.signInWithPassword("ada@captify.local", "secret");
+  await store.signInWithPassword("ada@sonaris.local", "secret");
   sent.length = 0;
   store.upgrade();
   assert.equal(sent.length, 1);
@@ -292,5 +292,5 @@ test("upgrade opens pricing with the account attached", async () => {
   assert.ok(url.includes("/pricing.html?"));
   assert.ok(url.includes("from=extension"));
   assert.ok(url.includes("user_id=user-1"));
-  assert.ok(url.includes("email=" + encodeURIComponent("ada@captify.local")));
+  assert.ok(url.includes("email=" + encodeURIComponent("ada@sonaris.local")));
 });

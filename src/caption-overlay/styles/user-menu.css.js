@@ -2,27 +2,27 @@
 // primitives in components/ui.js. Appended to the overlay <style> by
 // content-script.js (Shadow DOM: host-page CSS cannot reach these nodes).
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
 
   NS.userMenuCss = `
     /* Hamburger button (top bar) */
-    .captify-hamburger-btn {
+    .sonaris-hamburger-btn {
       width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
       border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06);
       color: rgba(255,255,255,0.75); display: flex; align-items: center;
       justify-content: center; cursor: pointer; padding: 0; outline: none;
       transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
     }
-    .captify-hamburger-btn:hover, .captify-hamburger-btn[aria-expanded="true"] {
+    .sonaris-hamburger-btn:hover, .sonaris-hamburger-btn[aria-expanded="true"] {
       background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.25); color: #fff;
     }
-    .captify-hamburger-btn:active { transform: scale(0.93); }
-    .captify-hamburger-btn:focus-visible {
+    .sonaris-hamburger-btn:active { transform: scale(0.93); }
+    .sonaris-hamburger-btn:focus-visible {
       border-color: rgba(255,255,255,0.6); box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
     }
 
     /* User-menu popup: a second panel in the subtitle window's style */
-    .captify-user-menu {
+    .sonaris-user-menu {
       position: absolute; top: calc(100% + 8px); right: 0; width: 300px;
       max-width: calc(100vw - 24px); padding: 14px; z-index: 30;
       background: rgba(18,18,22,0.94); color: #fafafa;
@@ -33,8 +33,8 @@
       transform-origin: top right; cursor: default; user-select: none;
       transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16,1,0.3,1), visibility 0.18s;
     }
-    .captify-user-menu.is-open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
-    .captify-panel.user-menu-open .captify-header-wrap {
+    .sonaris-user-menu.is-open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+    .sonaris-panel.user-menu-open .sonaris-header-wrap {
       opacity: 1; visibility: visible; transform: translateY(0) scale(1); pointer-events: auto;
     }
 

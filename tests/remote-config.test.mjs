@@ -103,13 +103,13 @@ test("network success is cached and returned", async () => {
   });
   assert.equal(out.backend_base_url, GOOD.backend_base_url);
   assert.equal(
-    storage.data.captifyRemoteConfig.backend_base_url,
+    storage.data.sonarisRemoteConfig.backend_base_url,
     GOOD.backend_base_url,
   );
 });
 
 test("network failure falls back to the storage cache", async () => {
-  const storage = fakeStorage({ captifyRemoteConfig: GOOD });
+  const storage = fakeStorage({ sonarisRemoteConfig: GOOD });
   const out = await loadRemoteConfig({
     fetchImpl: async () => {
       throw new Error("offline");
@@ -144,7 +144,7 @@ test("local-dev switch ships off so production uses the hosted config", () => {
 });
 
 test("an invalid hosted document falls back to the cache, not defaults", async () => {
-  const storage = fakeStorage({ captifyRemoteConfig: GOOD });
+  const storage = fakeStorage({ sonarisRemoteConfig: GOOD });
   const out = await loadRemoteConfig({
     fetchImpl: async () => ({
       ok: true,

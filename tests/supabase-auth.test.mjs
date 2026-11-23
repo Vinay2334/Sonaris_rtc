@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
 
-const USER = { id: "u-9", email: "grace@captify.local", user_metadata: { full_name: "Grace Hopper" } };
+const USER = { id: "u-9", email: "grace@sonaris.local", user_metadata: { full_name: "Grace Hopper" } };
 
 function loadAuth({ stored = {}, identity = null } = {}) {
   const calls = [];
@@ -43,26 +43,26 @@ function loadAuth({ stored = {}, identity = null } = {}) {
   for (const file of ["lib/supabase-config.js", "lib/supabase-auth.js"]) {
     vm.runInContext(readFileSync(new URL(`../src/caption-overlay/${file}`, import.meta.url), "utf8"), context);
   }
-  return { auth: window.CaptifyOverlay.supabaseAuth, stored, calls };
+  return { auth: window.SonarisOverlay.supabaseAuth, stored, calls };
 }
 
 test("email sign-in persists the session", async () => {
   const { auth, stored } = loadAuth();
   await auth.load();
-  await auth.signInWithPassword("grace@captify.local", "pw");
+  await auth.signInWithPassword("grace@sonaris.local", "pw");
   assert.equal((await auth.getAccessToken()), "atk");
-  assert.equal(stored.captifySupabaseSession.access_token, "atk");
+  assert.equal(stored.sonarisSupabaseSession.access_token, "atk");
 });
 
 test("session restores across restarts and refreshes before expiry", async () => {
   const first = loadAuth();
   await first.auth.load();
-  await first.auth.signInWithPassword("grace@captify.local", "pw");
+  await first.auth.signInWithPassword("grace@sonaris.local", "pw");
   // Simulate a restart with a nearly-expired session.
   const second = loadAuth({
     stored: {
-      captifySupabaseSession: {
-        ...first.stored.captifySupabaseSession,
+      sonarisSupabaseSession: {
+        ...first.stored.sonarisSupabaseSession,
         expires_at: Date.now() + 1000,
       },
     },
@@ -75,10 +75,10 @@ test("session restores across restarts and refreshes before expiry", async () =>
 test("logout clears the persisted session", async () => {
   const { auth, stored } = loadAuth();
   await auth.load();
-  await auth.signInWithPassword("grace@captify.local", "pw");
+  await auth.signInWithPassword("grace@sonaris.local", "pw");
   await auth.signOut();
   assert.equal(auth.getSession(), null);
-  assert.equal(stored.captifySupabaseSession, undefined);
+  assert.equal(stored.sonarisSupabaseSession, undefined);
   assert.equal(await auth.getAccessToken(), null);
 });
 

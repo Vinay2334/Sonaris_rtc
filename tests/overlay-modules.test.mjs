@@ -1,5 +1,5 @@
 // Guards the content-script split: every caption-overlay classic script must
-// load (manifest order) and register its window.CaptifyOverlay surface.
+// load (manifest order) and register its window.SonarisOverlay surface.
 // Runs on plain node (node --test tests/); no chrome.* or DOM needed because
 // no module touches them at load time.
 import test from "node:test";
@@ -35,7 +35,7 @@ function loadAll() {
       { filename: file },
     );
   }
-  return window.CaptifyOverlay;
+  return window.SonarisOverlay;
 }
 
 test("split modules register the full overlay surface in load order", () => {

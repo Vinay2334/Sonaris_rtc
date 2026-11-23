@@ -26,7 +26,7 @@ function loadClassicConfig({ cachedRemoteConfig } = {}) {
   const window = {};
   const stored = {};
   if (cachedRemoteConfig !== undefined) {
-    stored.captifyRemoteConfig = cachedRemoteConfig;
+    stored.sonarisRemoteConfig = cachedRemoteConfig;
   }
   const context = vm.createContext({
     window,
@@ -44,7 +44,7 @@ function loadClassicConfig({ cachedRemoteConfig } = {}) {
     ),
     context,
   );
-  return window.CaptifyOverlay.captifyConfig;
+  return window.SonarisOverlay.sonarisConfig;
 }
 
 test("derived defaults stay consistent with the base URL rule", () => {

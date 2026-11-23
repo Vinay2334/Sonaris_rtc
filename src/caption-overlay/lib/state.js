@@ -1,6 +1,6 @@
 // Single mutable overlay state. Modules read/write NS.state (alias S).
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
   // Same-document re-injection (the worker's executeScript running the
   // files twice) re-runs every classic script:
   // keep the existing state so the first injection's overlay refs survive

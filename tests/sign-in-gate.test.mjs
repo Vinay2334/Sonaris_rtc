@@ -45,7 +45,7 @@ class FakeEl {
 }
 
 const SUPA_USER = {
-  id: "user-1", email: "ada@captify.local",
+  id: "user-1", email: "ada@sonaris.local",
   user_metadata: { full_name: "Ada Lovelace" },
 };
 
@@ -87,15 +87,15 @@ function loadGate() {
   ]) {
     vm.runInContext(readFileSync(new URL(base + file, import.meta.url), "utf8"), context);
   }
-  return { NS: window.CaptifyOverlay, sent };
+  return { NS: window.SonarisOverlay, sent };
 }
 
 test("signed-out: gate explains the block with one Sign in button", () => {
   const { NS } = loadGate();
   const gate = NS.createSignInGate();
-  assert.equal(gate.el.className, "captify-auth-gate");
+  assert.equal(gate.el.className, "sonaris-auth-gate");
   assert.equal(gate.el.hidden, false);
-  assert.match(gate.el.textContent, /Sign in to use Captify/);
+  assert.match(gate.el.textContent, /Sign in to use Sonaris/);
   assert.match(gate.el.textContent, /sign-in page/);
   // No cramped inputs in the overlay: exactly one button.
   assert.equal(gate.el.findAll((el) => el.tagName === "INPUT").length, 0);
@@ -115,7 +115,7 @@ test("gate hides once the shared store signs in (login happened in the popup)", 
   const { NS } = loadGate();
   const gate = NS.createSignInGate();
   assert.equal(gate.el.hidden, false);
-  await NS.userStore.signInWithPassword("ada@captify.local", "secret");
+  await NS.userStore.signInWithPassword("ada@sonaris.local", "secret");
   await new Promise((r) => setTimeout(r, 10));
   assert.equal(NS.userStore.getState().signedIn, true);
   assert.equal(gate.el.hidden, true);

@@ -6,7 +6,7 @@
 // Separator, Avatar — with the same zinc design tokens and class hooks
 // (ui-button, ui-badge, ... styled in styles/user-menu.css.js).
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
 
   function el(tag, className, text) {
     const node = document.createElement(tag);

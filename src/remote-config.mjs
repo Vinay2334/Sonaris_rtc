@@ -14,7 +14,7 @@
 export const REMOTE_CONFIG_URL = "https://floral-dust-d2f5.vinaybhardwaj2334.workers.dev/extension-config.json";
 
 // chrome.storage.local key for the last validated remote document.
-export const REMOTE_CONFIG_STORAGE_KEY = "captifyRemoteConfig";
+export const REMOTE_CONFIG_STORAGE_KEY = "sonarisRemoteConfig";
 
 // One remote round-trip must fail fast into the fallback path, never hang
 // session start or a quota read.

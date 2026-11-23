@@ -1,6 +1,6 @@
-// Main subtitle-window stylesheet (moved verbatim from content-script.js) (classic script: no imports/exports; shares window.CaptifyOverlay).
+// Main subtitle-window stylesheet (moved verbatim from content-script.js) (classic script: no imports/exports; shares window.SonarisOverlay).
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
   const S = NS.state;
   const C = NS.constants;
   NS.createStyles = function() {
@@ -19,7 +19,7 @@
       }
 
       /* Main Subtitle Box */
-      .captify-panel {
+      .sonaris-panel {
         position: fixed;
         left: 50%;
         bottom: 6%;
@@ -46,22 +46,22 @@
           visibility 0.28s;
       }
 
-      .captify-panel.is-visible {
+      .sonaris-panel.is-visible {
         opacity: 1;
         visibility: visible;
         transform: translateX(-50%) translateY(0) scale(1);
       }
 
-      .captify-panel.is-pinned.is-visible {
+      .sonaris-panel.is-pinned.is-visible {
         transform: translateY(0) scale(1);
       }
 
-      .captify-panel.is-pinned {
+      .sonaris-panel.is-pinned {
         transform: translateY(10px) scale(0.98);
       }
 
       /* Floating Menu Bar Wrapper (sits above the subtitle box with an 8px hover bridge) */
-      .captify-header-wrap {
+      .sonaris-header-wrap {
         position: absolute;
         left: 0;
         right: 0;
@@ -79,10 +79,10 @@
         z-index: 20;
       }
 
-      .captify-panel:hover .captify-header-wrap,
-      .captify-panel.menu-open .captify-header-wrap,
-      .captify-panel.is-dragging .captify-header-wrap,
-      .captify-panel:focus-within .captify-header-wrap {
+      .sonaris-panel:hover .sonaris-header-wrap,
+      .sonaris-panel.menu-open .sonaris-header-wrap,
+      .sonaris-panel.is-dragging .sonaris-header-wrap,
+      .sonaris-panel:focus-within .sonaris-header-wrap {
         opacity: 1;
         visibility: visible;
         transform: translateY(0) scale(1);
@@ -90,7 +90,7 @@
       }
 
       /* Separate Floating Menu Box */
-      .captify-header {
+      .sonaris-header {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -106,9 +106,9 @@
         touch-action: none;
       }
 
-      .captify-panel.is-dragging .captify-header,
-      .captify-panel.is-dragging .dd-trigger,
-      .captify-panel.is-dragging .dd-label {
+      .sonaris-panel.is-dragging .sonaris-header,
+      .sonaris-panel.is-dragging .dd-trigger,
+      .sonaris-panel.is-dragging .dd-label {
         cursor: grabbing;
       }
 
@@ -129,7 +129,7 @@
         margin: 0 2px;
       }
 
-      .captify-close-btn {
+      .sonaris-close-btn {
         width: 26px;
         height: 26px;
         border-radius: 8px;
@@ -150,17 +150,17 @@
           transform 0.1s ease;
       }
 
-      .captify-close-btn:hover {
+      .sonaris-close-btn:hover {
         background: rgba(239, 68, 68, 0.22);
         border-color: rgba(239, 68, 68, 0.45);
         color: #fca5a5;
       }
 
-      .captify-close-btn:active {
+      .sonaris-close-btn:active {
         transform: scale(0.93);
       }
 
-      .captify-close-btn:focus-visible {
+      .sonaris-close-btn:focus-visible {
         border-color: rgba(239, 68, 68, 0.75);
         box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
       }
@@ -322,7 +322,7 @@
       }
 
       /* Subtitle Scroll Body */
-      .captify-body {
+      .sonaris-body {
         flex: 1;
         min-height: 0;
         overflow-y: auto;
@@ -334,23 +334,23 @@
         scroll-behavior: smooth;
       }
 
-      .captify-body::-webkit-scrollbar,
+      .sonaris-body::-webkit-scrollbar,
       .dd-menu::-webkit-scrollbar {
         width: 5px;
       }
 
-      .captify-body::-webkit-scrollbar-track,
+      .sonaris-body::-webkit-scrollbar-track,
       .dd-menu::-webkit-scrollbar-track {
         background: transparent;
       }
 
-      .captify-body::-webkit-scrollbar-thumb,
+      .sonaris-body::-webkit-scrollbar-thumb,
       .dd-menu::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 0.18);
         border-radius: 999px;
       }
 
-      .captify-body::-webkit-scrollbar-thumb:hover,
+      .sonaris-body::-webkit-scrollbar-thumb:hover,
       .dd-menu::-webkit-scrollbar-thumb:hover {
         background: rgba(255, 255, 255, 0.32);
       }
@@ -405,7 +405,7 @@
         color: rgba(255, 255, 255, 0.35);
       }
 
-      .captify-panel:hover .resize-handle {
+      .sonaris-panel:hover .resize-handle {
         opacity: 1;
       }
 
@@ -414,7 +414,7 @@
       }
 
       /* Bottom status bar: play/pause button on the left, status text right */
-      .captify-statusbar {
+      .sonaris-statusbar {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -424,7 +424,7 @@
         flex-shrink: 0;
       }
 
-      .captify-play-btn {
+      .sonaris-play-btn {
         width: 26px;
         height: 26px;
         border-radius: 8px;
@@ -441,35 +441,35 @@
         transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
       }
 
-      .captify-play-btn:hover {
+      .sonaris-play-btn:hover {
         background: rgba(255, 255, 255, 0.14);
         border-color: rgba(255, 255, 255, 0.25);
       }
 
-      .captify-play-btn:active {
+      .sonaris-play-btn:active {
         transform: scale(0.93);
       }
 
-      .captify-play-btn:focus-visible {
+      .sonaris-play-btn:focus-visible {
         border-color: rgba(255, 255, 255, 0.6);
         box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
       }
 
-      .captify-spinner {
+      .sonaris-spinner {
         width: 13px;
         height: 13px;
         border-radius: 50%;
         border: 2px solid rgba(255, 255, 255, 0.25);
         border-top-color: #fff;
-        animation: captify-spin 0.8s linear infinite;
+        animation: sonaris-spin 0.8s linear infinite;
         display: inline-block;
       }
 
-      @keyframes captify-spin {
+      @keyframes sonaris-spin {
         to { transform: rotate(360deg); }
       }
 
-      .captify-status {
+      .sonaris-status {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -490,7 +490,7 @@
         border-radius: 50%;
         background: #f5a623;
         flex-shrink: 0;
-        animation: captify-pulse 1.6s ease-in-out infinite;
+        animation: sonaris-pulse 1.6s ease-in-out infinite;
       }
 
       .status-dot.is-live {
@@ -507,7 +507,7 @@
         background: #f87171;
       }
 
-      .captify-retry-btn {
+      .sonaris-retry-btn {
         display: inline-flex;
         align-items: center;
         gap: 6px;
@@ -526,40 +526,40 @@
         transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
       }
 
-      .captify-retry-btn:hover {
+      .sonaris-retry-btn:hover {
         background: rgba(248, 113, 113, 0.28);
         border-color: rgba(248, 113, 113, 0.75);
       }
 
-      .captify-retry-btn:active {
+      .sonaris-retry-btn:active {
         transform: scale(0.95);
       }
 
-      .captify-retry-btn:focus-visible {
+      .sonaris-retry-btn:focus-visible {
         border-color: #f87171;
         box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.25);
       }
 
-      .captify-retry-btn[hidden] {
+      .sonaris-retry-btn[hidden] {
         display: none;
       }
 
       /* display:flex above beats the hidden attribute; restore it. */
-      .captify-play-btn[hidden] {
+      .sonaris-play-btn[hidden] {
         display: none;
       }
 
-      @keyframes captify-pulse {
+      @keyframes sonaris-pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.35; }
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .captify-spinner,
+        .sonaris-spinner,
         .status-dot {
           animation: none;
         }
-        .captify-panel,
+        .sonaris-panel,
         .caption-line {
           transition: none;
         }

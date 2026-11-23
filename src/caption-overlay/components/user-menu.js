@@ -6,14 +6,14 @@
 // All state comes from lib/user-store.js; all controls are the shadcn-style
 // primitives from components/ui.js.
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
 
   function createUserMenu({ onOpenChange } = {}) {
     const { ui, icons, userStore } = NS;
     let isOpen = false;
     let destroyed = false;
 
-    const button = ui.el("button", "captify-hamburger-btn");
+    const button = ui.el("button", "sonaris-hamburger-btn");
     button.type = "button";
     button.title = "Menu";
     button.setAttribute("aria-label", "Open menu");
@@ -21,9 +21,9 @@
     button.setAttribute("aria-expanded", "false");
     button.innerHTML = icons.menu;
 
-    const popup = ui.el("div", "captify-user-menu");
+    const popup = ui.el("div", "sonaris-user-menu");
     popup.setAttribute("role", "dialog");
-    popup.setAttribute("aria-label", "Captify menu");
+    popup.setAttribute("aria-label", "Sonaris menu");
 
     function sectionLabel(icon, text) {
       const label = ui.el("div", "um-section-label");

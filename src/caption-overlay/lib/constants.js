@@ -1,8 +1,8 @@
 // Shared constants for the caption overlay (classic script, no imports/exports).
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
   NS.constants = {
-  CONTAINER_ID: "__captify-caption-container",
+  CONTAINER_ID: "__sonaris-caption-container",
   MAX_LINES: 2,
 
   LANGUAGES: [

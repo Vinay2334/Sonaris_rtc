@@ -46,7 +46,7 @@ class FakeEl {
 }
 
 const SUPA_USER = {
-  id: "user-1", email: "ada@captify.local",
+  id: "user-1", email: "ada@sonaris.local",
   user_metadata: { full_name: "Ada Lovelace" },
 };
 
@@ -66,14 +66,14 @@ function stubFetch(url, opts = {}) {
           { id: "studio", name: "Studio", price_label: "$50 / month", tagline: "For all-day power users", price_monthly_usd: 50, display_order: 3, is_featured: false },
           { id: "pro", name: "Pro", price_label: "$27 / month", tagline: "For daily meetings, streams & learners", price_monthly_usd: 27, display_order: 2, is_featured: true },
           { id: "starter", name: "Starter", price_label: "$10 / month", tagline: "For casual viewing and study", price_monthly_usd: 10, display_order: 1, is_featured: false },
-          { id: "free", name: "Free", price_label: "$0 / month", tagline: "For trying Captify", price_monthly_usd: 0, display_order: 0, is_featured: false },
+          { id: "free", name: "Free", price_label: "$0 / month", tagline: "For trying Sonaris", price_monthly_usd: 0, display_order: 0, is_featured: false },
         ],
       }),
     );
   }
   if (u.includes("/me/quota")) {
     return Promise.resolve(
-      ok({ user_id: "user-1", email: "ada@captify.local", plan: "Free", used_seconds: 120, limit_seconds: 6000, remaining_seconds: 5880 }),
+      ok({ user_id: "user-1", email: "ada@sonaris.local", plan: "Free", used_seconds: 120, limit_seconds: 6000, remaining_seconds: 5880 }),
     );
   }
   return Promise.resolve({ ok: false, status: 401, json: async () => ({ msg: "no" }) });
@@ -97,7 +97,7 @@ function loadMenu() {
   ]) {
     vm.runInContext(readFileSync(new URL(base + file, import.meta.url), "utf8"), context);
   }
-  return { NS: window.CaptifyOverlay, sent };
+  return { NS: window.SonarisOverlay, sent };
 }
 
 function buttonLabels(menu) {
@@ -107,7 +107,7 @@ function buttonLabels(menu) {
 }
 
 async function openMenuOnPlan(NS, plan) {
-  await NS.userStore.signInWithPassword("ada@captify.local", "secret");
+  await NS.userStore.signInWithPassword("ada@sonaris.local", "secret");
   await NS.userStore.refreshPlans();
   if (plan !== "Free") {
     NS.userStore.applyQuota({ used_seconds: 0, limit_seconds: 6000, remaining_seconds: 6000, plan });

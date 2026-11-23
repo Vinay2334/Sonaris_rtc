@@ -10,17 +10,17 @@
 // Quota is stored in seconds (the unit the backend bills) and rendered
 // in minutes by the menu; remaining = limit - used, computed server-side.
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
   // Same-document re-injection re-runs this script: keep the existing store
   // so subscriptions, loaded state and quota survive instead of resetting.
   if (NS.userStore) return;
-  const STORAGE_KEY = "captifyUserState";
+  const STORAGE_KEY = "sonarisUserState";
 
   const DEFAULT_STATE = Object.freeze({
     signedIn: false,
     user: null, // { id, name, email, initials }
     quota: { usedSeconds: 0, limitSeconds: 2400, remainingSeconds: 2400 },
-    plan: { name: "Free", priceLabel: "$0 / month", tagline: "For trying Captify" },
+    plan: { name: "Free", priceLabel: "$0 / month", tagline: "For trying Sonaris" },
   });
 
   const PRO_PLAN = Object.freeze({
@@ -62,7 +62,7 @@
 
   function notifyBackend(action, extra) {
     try {
-      const msg = { type: "captify-menu-action", action, ...(extra || {}) };
+      const msg = { type: "sonaris-menu-action", action, ...(extra || {}) };
       // tabId is always explicit (null when unknown) so the worker can
       // fall back to the sender tab without guessing about missing keys.
       if (action === "sign-in") msg.tabId = originTabId;
@@ -82,7 +82,7 @@
   function userFromSupabase(su) {
     if (!su) return null;
     const meta = su.user_metadata || {};
-    const name = (meta.first_name || meta.last_name ? `${meta?.first_name} ${meta?.last_name}` : null) || meta?.name || (su.email ? su.email.split("@")[0] : "Captify User");
+    const name = (meta.first_name || meta.last_name ? `${meta?.first_name} ${meta?.last_name}` : null) || meta?.name || (su.email ? su.email.split("@")[0] : "Sonaris User");
     const user = { id: su.id || null, name, email: su.email || "" };
     user.initials = initialsFor(user);
     return user;
@@ -143,7 +143,7 @@
       const request = (async () => {
         try {
           const res = await chrome.runtime.sendMessage({
-            type: "captify-overlay-data",
+            type: "sonaris-overlay-data",
             url,
             headers: headers || {},
           });
@@ -172,7 +172,7 @@
   async function fetchQuota() {
     // Pick up a moved backend before building the URL (cheap storage read;
     // baked-in defaults stand when nothing cached yet).
-    try { await NS.captifyConfig?.loadRemoteConfig?.(); } catch (e) {}
+    try { await NS.sonarisConfig?.loadRemoteConfig?.(); } catch (e) {}
     let token = await NS.supabaseAuth?.getAccessToken?.();
     // Snapshot before the reload below: a concurrent expiry sign-out may
     // flip state while we re-read storage, and the throw must not depend
@@ -197,7 +197,7 @@
       }
       return null;
     }
-    const url = NS.captifyConfig?.quotaUrl?.();
+    const url = NS.sonarisConfig?.quotaUrl?.();
     if (!url) return null;
     const res = await fetchJson(url, { Authorization: `Bearer ${token}` });
     if (res.status === 401) {
@@ -234,8 +234,8 @@
   }
 
   async function fetchPlanCatalog() {
-    try { await NS.captifyConfig?.loadRemoteConfig?.(); } catch (e) {}
-    const url = NS.captifyConfig?.plansUrl?.();
+    try { await NS.sonarisConfig?.loadRemoteConfig?.(); } catch (e) {}
+    const url = NS.sonarisConfig?.plansUrl?.();
     if (!url) return null;
     // fetchJson never throws: unreachable/blocked backends resolve
     // { ok: false } and the menu keeps the legacy fallback.
@@ -322,7 +322,7 @@
   }
 
   async function restore() {
-    try { await NS.captifyConfig?.loadRemoteConfig?.(); } catch (e) {}
+    try { await NS.sonarisConfig?.loadRemoteConfig?.(); } catch (e) {}
     const supa = await NS.supabaseAuth?.load?.();
     if (!supa) {
       // No Supabase session but a stale signed-in flag: sign out cleanly
@@ -343,7 +343,7 @@
     state = {
       ...state,
       signedIn: true,
-      user: userFromSupabase(su) || state.user || { name: "Captify User", email: "", initials: "CU" },
+      user: userFromSupabase(su) || state.user || { name: "Sonaris User", email: "", initials: "SU" },
     };
     persist();
     emit();
@@ -356,7 +356,7 @@
     state = {
       ...state,
       signedIn: true,
-      user: userFromSupabase(su) || { name: "Captify User", email: "", initials: "CU" },
+      user: userFromSupabase(su) || { name: "Sonaris User", email: "", initials: "SU" },
     };
     persist();
     emit();
@@ -419,7 +419,7 @@
     // service worker opens it after allow-listing it against SITE_URL.
     upgrade() {
       const s = NS.userStore.getState();
-      const url = NS.captifyConfig?.pricingUrl?.(s.user?.email, s.user?.id);
+      const url = NS.sonarisConfig?.pricingUrl?.(s.user?.email, s.user?.id);
       notifyBackend("upgrade", url ? { url } : undefined);
     },
     getProPlan: () => ({ ...PRO_PLAN }),

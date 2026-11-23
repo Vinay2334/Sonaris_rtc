@@ -1,6 +1,6 @@
-// Bottom status bar: play/pause, retry, live status (classic script: no imports/exports; shares window.CaptifyOverlay).
+// Bottom status bar: play/pause, retry, live status (classic script: no imports/exports; shares window.SonarisOverlay).
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
   const S = NS.state;
   const C = NS.constants;
   const SVG_PLAY =
@@ -19,7 +19,7 @@
     S.playBtn.classList.toggle("is-buffering", showSpinner);
     S.playBtn.classList.toggle("is-paused", S.paused);
     if (showSpinner) {
-      S.playBtn.innerHTML = '<span class="captify-spinner" aria-hidden="true"></span>';
+      S.playBtn.innerHTML = '<span class="sonaris-spinner" aria-hidden="true"></span>';
       S.playBtn.title = "Waiting for Captions";
       S.playBtn.setAttribute("aria-label", "Waiting for Captions");
     } else if (S.paused) {
@@ -66,11 +66,11 @@
   NS.createStatusBar = function() {
     // Bottom status bar: play/pause button on the left, live status on right.
     S.statusBar = document.createElement("div");
-    S.statusBar.className = "captify-statusbar";
+    S.statusBar.className = "sonaris-statusbar";
 
     S.playBtn = document.createElement("button");
     S.playBtn.type = "button";
-    S.playBtn.className = "captify-play-btn";
+    S.playBtn.className = "sonaris-play-btn";
     S.playBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       NS.setPaused(!S.paused);
@@ -78,7 +78,7 @@
 
     S.retryBtn = document.createElement("button");
     S.retryBtn.type = "button";
-    S.retryBtn.className = "captify-retry-btn";
+    S.retryBtn.className = "sonaris-retry-btn";
     S.retryBtn.hidden = true;
     S.retryBtn.title = "Reconnect to the transcription server";
     S.retryBtn.setAttribute("aria-label", "Retry connection");
@@ -94,7 +94,7 @@
     });
 
     const statusWrap = document.createElement("div");
-    statusWrap.className = "captify-status";
+    statusWrap.className = "sonaris-status";
     S.statusDot = document.createElement("span");
     S.statusDot.className = "status-dot";
     S.statusDot.setAttribute("aria-hidden", "true");

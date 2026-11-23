@@ -34,7 +34,7 @@ class FakeEl {
 }
 
 const SUPA_USER = {
-  id: "user-1", email: "ada@captify.local",
+  id: "user-1", email: "ada@sonaris.local",
   user_metadata: { full_name: "Ada Lovelace" },
 };
 
@@ -102,7 +102,7 @@ function loadPage({ search = "?tabId=7", signupNeedsConfirm = false } = {}) {
     vm.runInContext(readFileSync(new URL(base + file, import.meta.url), "utf8"), context);
   }
   return {
-    NS: context.window?.CaptifyOverlay ?? vm.runInContext("window.CaptifyOverlay", context),
+    NS: context.window?.SonarisOverlay ?? vm.runInContext("window.SonarisOverlay", context),
     els, sent, closed: () => closed,
   };
 }
@@ -115,12 +115,12 @@ const norm = (v) => JSON.parse(JSON.stringify(v));
 
 test("email sign-in reports the tab and closes the window", async () => {
   const { NS, els, sent, closed } = loadPage();
-  els["signin-email"].value = "ada@captify.local";
+  els["signin-email"].value = "ada@sonaris.local";
   els["signin-password"].value = "secret";
   els["signin-form"].fire("submit", { preventDefault() {} });
   await sleep(20);
   assert.equal(NS.userStore.getState().signedIn, true);
-  assert.deepEqual(norm(sent), [{ type: "captify-menu-action", action: "sign-in", tabId: 7 }]);
+  assert.deepEqual(norm(sent), [{ type: "sonaris-menu-action", action: "sign-in", tabId: 7 }]);
   assert.equal(closed(), true);
 });
 
@@ -129,13 +129,13 @@ test("google sign-in reports the tab and closes the window", async () => {
   els["signin-google"].click();
   await sleep(20);
   assert.equal(NS.userStore.getState().signedIn, true);
-  assert.deepEqual(norm(sent), [{ type: "captify-menu-action", action: "sign-in", tabId: 12 }]);
+  assert.deepEqual(norm(sent), [{ type: "sonaris-menu-action", action: "sign-in", tabId: 12 }]);
   assert.equal(closed(), true);
 });
 
 test("signup without confirmation signs in; with confirmation it waits", async () => {
   const direct = loadPage();
-  direct.els["signin-email"].value = "ada@captify.local";
+  direct.els["signin-email"].value = "ada@sonaris.local";
   direct.els["signin-password"].value = "secret";
   direct.els["signin-signup"].click();
   await sleep(20);
@@ -143,7 +143,7 @@ test("signup without confirmation signs in; with confirmation it waits", async (
   assert.equal(direct.closed(), true);
 
   const confirm = loadPage({ signupNeedsConfirm: true });
-  confirm.els["signin-email"].value = "ada@captify.local";
+  confirm.els["signin-email"].value = "ada@sonaris.local";
   confirm.els["signin-password"].value = "secret";
   confirm.els["signin-signup"].click();
   await sleep(20);
@@ -156,12 +156,12 @@ test("signed-in state shows continue; invalid tab id sends null", async () => {
   const { NS, els, sent } = loadPage({ search: "?tabId=abc" });
   assert.equal(NS.signinTabIdFromQuery({ search: "?tabId=abc" }), null);
   assert.equal(NS.signinTabIdFromQuery({ search: "" }), null);
-  els["signin-email"].value = "ada@captify.local";
+  els["signin-email"].value = "ada@sonaris.local";
   els["signin-password"].value = "secret";
   els["signin-form"].fire("submit", { preventDefault() {} });
   await sleep(20);
   assert.equal(els["signin-signedin"].hidden, false);
   assert.equal(els["signin-form"].hidden, true);
-  assert.match(els["signin-welcome"].textContent, /ada@captify.local/);
-  assert.deepEqual(norm(sent), [{ type: "captify-menu-action", action: "sign-in", tabId: null }]);
+  assert.match(els["signin-welcome"].textContent, /ada@sonaris.local/);
+  assert.deepEqual(norm(sent), [{ type: "sonaris-menu-action", action: "sign-in", tabId: null }]);
 });

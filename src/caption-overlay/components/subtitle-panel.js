@@ -1,6 +1,6 @@
-// Overlay shell: build, teardown, drag/resize, header wiring (classic script: no imports/exports; shares window.CaptifyOverlay).
+// Overlay shell: build, teardown, drag/resize, header wiring (classic script: no imports/exports; shares window.SonarisOverlay).
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
   const S = NS.state;
   const C = NS.constants;
   NS.closeAndTeardown = function(notifyServiceWorker = true) {
@@ -69,7 +69,7 @@
       // reappears. State now survives re-injection, so teardown has to
       // leave it reopenable explicitly.
       S.isClosing = false;
-      window.__captifyCaptionInjected = false;
+      window.__sonarisCaptionInjected = false;
     }, 280);
   }
   NS.ensureOverlay = function() {
@@ -122,15 +122,15 @@
     S.shadow.appendChild(NS.createStyles());
 
     S.container = document.createElement("div");
-    S.container.className = "captify-panel";
+    S.container.className = "sonaris-panel";
     S.container.setAttribute("aria-live", "polite");
     S.container.setAttribute("aria-atomic", "false");
 
     S.headerWrap = document.createElement("div");
-    S.headerWrap.className = "captify-header-wrap";
+    S.headerWrap.className = "sonaris-header-wrap";
 
     S.header = document.createElement("div");
-    S.header.className = "captify-header";
+    S.header.className = "sonaris-header";
 
     const grip = document.createElement("div");
     grip.className = "drag-grip";
@@ -155,7 +155,7 @@
 
     const closeBtn = document.createElement("button");
     closeBtn.type = "button";
-    closeBtn.className = "captify-close-btn";
+    closeBtn.className = "sonaris-close-btn";
     closeBtn.title = "Close subtitles";
     closeBtn.setAttribute("aria-label", "Close subtitles");
     closeBtn.innerHTML = `
@@ -171,8 +171,8 @@
     // Hamburger + user menu (sign-in / quota / plan), built by
     // caption-overlay/components/user-menu.js. Guarded: if its classic
     // scripts failed to load, the rest of the overlay must still work.
-    if (window.CaptifyOverlay?.createUserMenu) {
-      S.userMenu = window.CaptifyOverlay.createUserMenu({
+    if (window.SonarisOverlay?.createUserMenu) {
+      S.userMenu = window.SonarisOverlay.createUserMenu({
         onOpenChange(open) {
           S.container?.classList.toggle("user-menu-open", open);
           if (open) {
@@ -198,11 +198,11 @@
     // Sign-in gate: message + Sign in button directly in the subtitle
     // window. Signed out (the store default until load resolves), the
     // caption body/status bar are hidden by the is-signed-out CSS.
-    if (window.CaptifyOverlay?.createSignInGate && window.CaptifyOverlay?.userStore) {
+    if (window.SonarisOverlay?.createSignInGate && window.SonarisOverlay?.userStore) {
       S.container.classList.add("is-signed-out");
-      S.signInGate = window.CaptifyOverlay.createSignInGate();
+      S.signInGate = window.SonarisOverlay.createSignInGate();
       S.container.appendChild(S.signInGate.el);
-      const store = window.CaptifyOverlay.userStore;
+      const store = window.SonarisOverlay.userStore;
       S.unsubscribeAuth = store.subscribe(NS.applyAuthState);
       store.load(NS.applyAuthState);
     } else {
@@ -212,7 +212,7 @@
     }
 
     S.body = document.createElement("div");
-    S.body.className = "captify-body";
+    S.body.className = "sonaris-body";
     S.container.appendChild(S.body);
 
     NS.createStatusBar();
@@ -251,7 +251,7 @@
         S.modelTierDropdown.close();
         S.targetDropdown.close();
       }
-      if (!e.target.closest(".captify-user-menu, .captify-hamburger-btn")) {
+      if (!e.target.closest(".sonaris-user-menu, .sonaris-hamburger-btn")) {
         S.userMenu?.close();
       }
     });
@@ -278,9 +278,9 @@
     S.header.addEventListener("pointerdown", (e) => {
       if (
         e.target.closest(".dd-menu") ||
-        e.target.closest(".captify-close-btn") ||
-        e.target.closest(".captify-hamburger-btn") ||
-        e.target.closest(".captify-user-menu")
+        e.target.closest(".sonaris-close-btn") ||
+        e.target.closest(".sonaris-hamburger-btn") ||
+        e.target.closest(".sonaris-user-menu")
       )
         return;
       if (e.button !== 0) return;

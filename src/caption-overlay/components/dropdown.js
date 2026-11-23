@@ -1,6 +1,6 @@
-// Custom dropdown used by the subtitle top bar (classic script: no imports/exports; shares window.CaptifyOverlay).
+// Custom dropdown used by the subtitle top bar (classic script: no imports/exports; shares window.SonarisOverlay).
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
   const S = NS.state;
   const C = NS.constants;
   NS.makeDropdown = function(options, defaultCode, labelText, onChange, showBadge = true) {

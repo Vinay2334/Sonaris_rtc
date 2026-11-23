@@ -1,10 +1,10 @@
 // Logic for the standalone sign-in window (src/signin.html).
-// Classic script: shares window.CaptifyOverlay, no imports.
+// Classic script: shares window.SonarisOverlay, no imports.
 // Reuses lib/user-store.js, so sign-in here flips the same shared state
 // every tab overlay listens to; on success it tells the service worker
 // which tab to start captions for, then closes itself.
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
 
   // Hand-rolled query parse: no URLSearchParams dependency, so this
   // classic script runs in any extension context (and in bare-vm tests).

@@ -18,7 +18,7 @@ const recordingTabs = new Set();
 
 // The overlay injects only here, on explicit user activation (toolbar
 // click, sign-in from the gate/menu): there is no manifest content_scripts
-// entry, so opening a page never loads Captify. The click gesture grants
+// entry, so opening a page never loads Sonaris. The click gesture grants
 // activeTab, which covers this injection without any <all_urls> host
 // permission.
 async function ensureCaptionScript(tabId) {
@@ -26,7 +26,7 @@ async function ensureCaptionScript(tabId) {
     await chrome.scripting.executeScript({
       target: { tabId, allFrames: false },
       // Order matters: caption-overlay/* are classic scripts that register
-      // window.CaptifyOverlay before content-script.js consumes it.
+      // window.SonarisOverlay before content-script.js consumes it.
       files: [
         "caption-overlay/lib/constants.js",
         "caption-overlay/lib/state.js",
@@ -62,13 +62,13 @@ async function ensureCaptionScript(tabId) {
 // opens it only when it stays on this origin.
 const SITE_URL = DEFAULT_CONFIG.site_url;
 
-// Captify only works signed in. The overlay's user store persists its
+// Sonaris only works signed in. The overlay's user store persists its
 // state under this key (caption-overlay/lib/user-store.js); the worker is
 // the enforcement point — no capture session starts while signed out.
 async function isSignedIn() {
   try {
-    const res = await chrome.storage.local.get("captifyUserState");
-    return !!res?.captifyUserState?.signedIn;
+    const res = await chrome.storage.local.get("sonarisUserState");
+    return !!res?.sonarisUserState?.signedIn;
   } catch (e) {
     return false;
   }
@@ -80,8 +80,8 @@ async function isSignedIn() {
 // session to this user. The service_role key never enters the extension.
 async function getAccessToken() {
   try {
-    const res = await chrome.storage.local.get("captifySupabaseSession");
-    return res?.captifySupabaseSession?.access_token || null;
+    const res = await chrome.storage.local.get("sonarisSupabaseSession");
+    return res?.sonarisSupabaseSession?.access_token || null;
   } catch (e) {
     return null;
   }
@@ -95,8 +95,8 @@ async function getAccessToken() {
 async function clearExpiredClientSession() {
   try {
     await chrome.storage.local.remove([
-      "captifySupabaseSession",
-      "captifyUserState",
+      "sonarisSupabaseSession",
+      "sonarisUserState",
     ]);
   } catch (e) {
     // Storage unavailable — overlays still sign out from the broadcast.
@@ -288,8 +288,8 @@ chrome.action.onClicked.addListener(async (tab) => {
 
   if (!(await isSignedIn())) {
     // Signed out: reveal the subtitle window with its sign-in gate only.
-    // No tabCapture, no offscreen session — Captify runs after sign-in,
-    // which arrives as a captify-menu-action from the overlay.
+    // No tabCapture, no offscreen session — Sonaris runs after sign-in,
+    // which arrives as a sonaris-menu-action from the overlay.
     await ensureCaptionScript(tab.id);
     await sendToTab(tab.id, { type: "caption-show" });
     return;
@@ -421,7 +421,7 @@ async function fetchForOverlay(url, headers) {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message && message.type === "captify-overlay-data") {
+  if (message && message.type === "sonaris-overlay-data") {
     fetchForOverlay(message.url, message.headers).then(
       (result) => { try { sendResponse?.({ ok: true, ...result }); } catch (e) {} },
       () => { try { sendResponse?.({ ok: false, status: 0, body: null }); } catch (e) {} },
@@ -438,7 +438,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       sendResponse?.({ ok: true, handled: true });
       return;
     }
-    if (message.type === "captify-menu-action") {
+    if (message.type === "sonaris-menu-action") {
       // User-menu / sign-in-gate actions from a tab overlay. The overlay
       // already flipped its local state (caption-overlay/lib/user-store.js);
       // here we enforce it: sign-in starts this tab's session, sign-out

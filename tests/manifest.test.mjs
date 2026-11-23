@@ -1,5 +1,5 @@
 // The overlay must inject on demand, never on page load: opening a page
-// must not load Captify. Plain node (node --test tests/).
+// must not load Sonaris. Plain node (node --test tests/).
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";

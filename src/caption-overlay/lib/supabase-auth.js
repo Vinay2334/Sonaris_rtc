@@ -10,17 +10,17 @@
 // - Session persists in chrome.storage.local across browser restarts and
 //   is refreshed before expiry; load() restores it on extension start.
 (function () {
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
 
   // Same-document re-injection re-runs this script: keep the existing
   // session instead of dropping it mid-recording.
   if (NS.supabaseAuth) return;
 
-  const STORAGE_KEY = "captifySupabaseSession";
+  const STORAGE_KEY = "sonarisSupabaseSession";
   const REFRESH_SKEW_MS = 60 * 1000;
 
   function cfg() {
-    return NS.captifyConfig || {};
+    return NS.sonarisConfig || {};
   }
 
   function projectUrl() {

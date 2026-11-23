@@ -47,7 +47,7 @@ function request(relay, msg) {
 }
 
 const QUOTA_SNAP = {
-  user_id: "user-1", email: "ada@captify.local", plan: "Pro",
+  user_id: "user-1", email: "ada@sonaris.local", plan: "Pro",
   used_seconds: 600, limit_seconds: 60000, remaining_seconds: 59400,
 };
 const okJson = (data) => Promise.resolve({ ok: true, status: 200, json: async () => data });
@@ -58,7 +58,7 @@ test("relays quota with the overlay's auth header", async () => {
     return okJson(QUOTA_SNAP);
   });
   const res = await request(relay, {
-    type: "captify-overlay-data",
+    type: "sonaris-overlay-data",
     url: "http://127.0.0.1:8000/api/v1/me/quota",
     headers: { Authorization: "Bearer probe-token" },
   });
@@ -72,7 +72,7 @@ test("relays the plan catalog", async () => {
   const plans = { plans: [{ id: "free", name: "Free", display_order: 0 }] };
   const { relay, fetched } = loadWorker(async () => okJson(plans));
   const res = await request(relay, {
-    type: "captify-overlay-data",
+    type: "sonaris-overlay-data",
     url: "http://127.0.0.1:8000/api/v1/plans",
     headers: {},
   });
@@ -83,7 +83,7 @@ test("relays the plan catalog", async () => {
 test("blocks non-backend URLs without fetching", async () => {
   const { relay, fetched } = loadWorker(async () => okJson({}));
   const res = await request(relay, {
-    type: "captify-overlay-data",
+    type: "sonaris-overlay-data",
     url: "https://evil.example/collect",
     headers: {},
   });
@@ -95,7 +95,7 @@ test("blocks non-backend URLs without fetching", async () => {
 test("backend down resolves unreachable instead of hanging", async () => {
   const { relay, fetched } = loadWorker(async () => { throw new TypeError("fetch failed"); });
   const res = await request(relay, {
-    type: "captify-overlay-data",
+    type: "sonaris-overlay-data",
     url: "http://127.0.0.1:8000/api/v1/plans",
     headers: {},
   });

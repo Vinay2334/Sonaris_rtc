@@ -1,11 +1,11 @@
-// Rolling live-subtitle window for Captify tab capture (thin bootstrap).
+// Rolling live-subtitle window for Sonaris tab capture (thin bootstrap).
 // Implementation lives in caption-overlay/* (classic scripts sharing
-// window.CaptifyOverlay); this file only guards re-injection, defines the
+// window.SonarisOverlay); this file only guards re-injection, defines the
 // runtime-message entry, and mounts the overlay.
 (function () {
   console.log("content script loaded");
-  const NS = (window.CaptifyOverlay = window.CaptifyOverlay || {});
-  if (window.__captifyCaptionInjected) {
+  const NS = (window.SonarisOverlay = window.SonarisOverlay || {});
+  if (window.__sonarisCaptionInjected) {
     // Same-document re-injection (the worker's executeScript running the
     // files twice): reuse the single overlay and keep exactly one runtime
     // listener instead of building another overlay host for the same page.
@@ -18,7 +18,7 @@
     NS.ensureOverlay();
     return;
   }
-  window.__captifyCaptionInjected = true;
+  window.__sonarisCaptionInjected = true;
 
   const S = NS.state;
   const C = NS.constants;

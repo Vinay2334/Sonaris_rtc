@@ -1,4 +1,4 @@
-# Captify Extension (WebRTC transport)
+# Sonaris Extension (WebRTC transport)
 
 Port of the socket-based `Extension/` build. The audio **processing** chain is
 unchanged; only the **transport** changed from WebSocket to WebRTC.
@@ -40,7 +40,7 @@ The server must accept WebRTC instead of raw WebSocket audio:
 
 ## Configuration
 
-Edit [rtc-config.js](E:\Programming\Extension\Captify\Extension\extensionRTC\rtc-config.js):
+Edit `extensionRTC/rtc-config.js`:
 
 - `SIGNAL_URL` — offer/answer endpoint (default
   `http://127.0.0.1:8000/api/v1/transcription/webrtc/offer`).
@@ -70,7 +70,7 @@ separate `<script>` tag or `globalThis` load-order race.
 
 The old 1.5k-line `src/content-script.js` is now a ~70-line bootstrap; the
 implementation lives in `src/caption-overlay/` as classic scripts sharing
-`window.CaptifyOverlay` (no imports/exports — content scripts can't be
+`window.SonarisOverlay` (no imports/exports — content scripts can't be
 modules), loaded in order before `src/content-script.js` — see
 `manifest.json` and `ensureCaptionScript` in `src/service-worker.js`:
 
@@ -86,10 +86,10 @@ The menu controls mirror shadcn/ui's Button/Badge/Progress/Separator/Avatar
 script). Account state is backed by Supabase Auth (`lib/supabase-auth.js`,
 email + Google) with quota/plan read from the backend
 (`GET /api/v1/me/quota`); see `lib/supabase-config.js` for the project
-setup and `Captify_new_server/SUPABASE_SETUP.md` for the full guide.
+setup and `server_new/SUPABASE_SETUP.md` for the full guide.
 
-Captify is gated on sign-in: while signed out, clicking the toolbar icon
-only reveals the subtitle window with a "Sign in to use Captify" message and
+Sonaris is gated on sign-in: while signed out, clicking the toolbar icon
+only reveals the subtitle window with a "Sign in to use Sonaris" message and
 Sign in button (`components/sign-in-gate.js`) — no capture starts, captions
 are dropped, and session controls are disabled in the overlay, and the
 service worker refuses to start/retry/pause a session. Signing in (gate or

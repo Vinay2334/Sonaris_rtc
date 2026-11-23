@@ -1,6 +1,6 @@
 {
-  "name": "Tab Capture - Recorder (WebRTC)",
-  "description": "Records the current tab in an offscreen document and streams audio over WebRTC.",
+  "name": "Sonaris",
+  "description": "Sonaris adds real-time captions and translation to any tab.",
   "version": "1.0.0",
   "manifest_version": 3,
   "minimum_chrome_version": "116",
