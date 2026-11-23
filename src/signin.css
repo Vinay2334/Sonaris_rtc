@@ -146,6 +146,23 @@ body {
 #signin-signup {
   margin-top: 4px;
 }
+.signin-forgot {
+  margin: 2px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.signin-forgot[hidden] {
+  display: none;
+}
+.signin-forgot a {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.signin-forgot a:hover {
+  color: #fff;
+}
 .signin-error {
   margin: 14px 0 0;
   font-size: 12px;

@@ -42,9 +42,62 @@
     const errorLine = $("signin-error");
     const signedinBox = $("signin-signedin");
     const welcomeLine = $("signin-welcome");
+    const forgotLink = $("signin-forgot");
+    const forgotRow = $("signin-forgot-row");
     const tabId = tabIdFromQuery(location || {});
     let busy = false;
     let authMode = "signin";
+
+    // Public website sign-in page, where the full forgot-password flow
+    // lives (website/signin.html reset mode -> reset-password.html).
+    // The extension popup stays a thin sign-in/up form: this link just
+    // opens the site with the typed email prefilled. Trailing slashes
+    // are stripped so a configured "https://site/" still yields a valid
+    // ".../signin.html" URL; "" means unconfigured (never a broken link).
+    function websiteSigninUrl(email) {
+      let base = "";
+      try {
+        base = String(
+          (NS.sonarisConfig && NS.sonarisConfig.SITE_URL) || "",
+        ).replace(/\/+$/, "");
+      } catch (e) {
+        base = "";
+      }
+      if (!base) return "";
+      const trimmed = String(email || "").trim();
+      return trimmed
+        ? `${base}/signin.html?email=${encodeURIComponent(trimmed)}`
+        : `${base}/signin.html`;
+    }
+
+    function openWebsiteSignin() {
+      let url = "";
+      try {
+        url = websiteSigninUrl(emailInput.value);
+      } catch (e) {
+        url = websiteSigninUrl("");
+      }
+      if (!url) {
+        showError("Couldn't open the website sign-in right now.");
+        return;
+      }
+      // Extension popup: open the site in a real tab. chrome.tabs is
+      // available on extension pages; window.open covers any other
+      // context. Neither exists in bare-vm tests — then this is a no-op.
+      try {
+        if (typeof chrome !== "undefined" && chrome?.tabs?.create) {
+          chrome.tabs.create({ url });
+          return;
+        }
+      } catch (e) {
+        /* fall through to window.open */
+      }
+      try {
+        window?.open?.(url, "_blank", "noopener");
+      } catch (e) {
+        /* no opener available */
+      }
+    }
 
     function setAuthMode(mode) {
       authMode = mode;
@@ -73,6 +126,10 @@
         ? "Already have an account?"
         : "Don't have an account?";
 
+      // Password reset lives on the website: no forgot link while
+      // creating an account.
+      if (forgotRow) forgotRow.hidden = isSignup;
+
       errorLine.hidden = true;
       errorLine.textContent = "";
     }
@@ -80,6 +137,12 @@
       e.preventDefault();
       setAuthMode(authMode === "signin" ? "signup" : "signin");
     });
+    if (forgotLink) {
+      forgotLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        openWebsiteSignin();
+      });
+    }
     setAuthMode("signin");
 
     function showError(err) {
@@ -101,11 +164,15 @@
       const s = userStore.getState();
       const signedIn = !!s.signedIn;
 
-      signedinBox.hidden = !signedIn;
-      form.hidden = signedIn;
-      googleBtn.hidden = signedIn;
+      // signedinBox/welcomeLine only exist in older page revisions:
+      // guard so a missing node can't break the live page (or the
+      // forgot-password link wiring above).
+      if (signedinBox) signedinBox.hidden = !signedIn;
+      if (form) form.hidden = signedIn;
+      if (googleBtn) googleBtn.hidden = signedIn;
+      if (forgotRow) forgotRow.hidden = signedIn || authMode === "signup";
 
-      if (signedIn && s.user) {
+      if (signedIn && s.user && welcomeLine) {
         welcomeLine.textContent = `Signed in as ${s.user.email || s.user.name}. Captions are unlocked.`;
       }
     }
@@ -179,11 +246,26 @@
     userStore.load(refresh);
     refresh();
 
-    return { refresh, destroy: () => unsubscribe() };
+    return { refresh, destroy: () => unsubscribe(), websiteSigninUrl, openWebsiteSignin };
   }
 
   NS.createSigninPage = createSigninPage;
   NS.signinTabIdFromQuery = tabIdFromQuery;
+  NS.signinWebsiteSigninUrl = function (email) {
+    let base = "";
+    try {
+      base = String(
+        (NS.sonarisConfig && NS.sonarisConfig.SITE_URL) || "",
+      ).replace(/\/+$/, "");
+    } catch (e) {
+      base = "";
+    }
+    if (!base) return "";
+    const trimmed = String(email || "").trim();
+    return trimmed
+      ? `${base}/signin.html?email=${encodeURIComponent(trimmed)}`
+      : `${base}/signin.html`;
+  };
 
   // Real page boot: DOM is parsed before this classic script runs.
   try {

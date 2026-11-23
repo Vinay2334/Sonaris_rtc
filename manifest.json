@@ -8,14 +8,14 @@
     "default_icon": "icons/not-recording.png"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; connect-src http://127.0.0.1:8000/ https://*.supabase.co https://captifylanding.netlify.app https://floral-dust-d2f5.vinaybhardwaj2334.workers.dev https://130.210.75.41.sslip.io" 
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; connect-src http://127.0.0.1:8000/ https://*.supabase.co https://captifylanding.netlify.app https://floral-dust-d2f5.vinaybhardwaj2334.workers.dev https://api.sonaris.cc" 
   },
   "background": {
     "service_worker": "service-worker.js",
     "type": "module"
   },
   "permissions": ["tabCapture", "offscreen", "downloads", "scripting", "activeTab", "storage", "identity"],
-  "host_permissions": ["http://127.0.0.1:8000/*", "https://*.supabase.co/*", "https://captifylanding.netlify.app/*", "https://floral-dust-d2f5.vinaybhardwaj2334.workers.dev/*", "https://130.210.75.41.sslip.io/*"],
+  "host_permissions": ["http://127.0.0.1:8000/*", "https://*.supabase.co/*", "https://captifylanding.netlify.app/*", "https://floral-dust-d2f5.vinaybhardwaj2334.workers.dev/*", "https://api.sonaris.cc/*"],
   "web_accessible_resources": [
     {
       "resources": ["recorder-processor.js"],
