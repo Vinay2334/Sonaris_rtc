@@ -783,6 +783,10 @@ async function startRecording(tabId, streamId, opts = {}) {
           return false;
         });
         if (!ok) return;
+        // A fresh server-side session lost the previous language state:
+        // re-assert it before the audio it describes. sendChunk also
+        // asserts per chunk, so this covers the empty-preRoll case too.
+        if (session.langConfig) sendLangConfig(session);
         while (session.preRollChunks.length > 0) {
           sendChunk(session, session.preRollChunks.shift());
         }
@@ -1050,8 +1054,15 @@ function broadcastQuota(session, quota) {
 
 function sendChunk(session, audioData) {
   if (session.paused) return;
+  // Mode travels with every data chunk: assert the current mode before the
+  // audio so a fresh server session (pause/resume, silence-triggered
+  // reconnect, idle timeout) never falls back to its default. The channel
+  // is ordered, so this control always applies before the audio behind it.
+  // Repeat sends are cheap: the server skips already-applied targets.
+  if (session.langConfig) sendLangConfig(session);
   if (session.audioChannel && session.audioChannel.readyState === "open") {
     if (session.pendingChunks.length) flushPendingChunks(session);
+    flushPendingControl(session);
     session.audioChannel.send(audioData);
   } else if (session.audioChannel) {
     if (session.pendingChunks.length >= MAX_PENDING_CHUNKS)
