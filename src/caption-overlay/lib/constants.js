@@ -41,5 +41,7 @@
   ],
 
   CONNECT_WATCHDOG_MS: 20000,
+
+  SUPPORT_EMAIL: "support@sonaris.cc",
   };
 })();

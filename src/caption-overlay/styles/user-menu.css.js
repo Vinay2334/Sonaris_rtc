@@ -49,6 +49,7 @@
     }
     .um-section-label svg { color: rgba(255,255,255,0.7); }
     .um-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .um-support-email { font-size: 12px; color: rgba(255,255,255,0.85); }
     .um-value { font-size: 12px; color: rgba(255,255,255,0.85); }
     .um-muted { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 6px; }
     .um-stack { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }

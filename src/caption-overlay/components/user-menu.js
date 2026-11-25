@@ -99,6 +99,16 @@
         }));
         popup.appendChild(upgrade);
       }
+
+      // Support: plain-text email row so users can reach us from the overlay.
+      popup.appendChild(ui.separator());
+      const supportRow = ui.el("div", "um-row");
+      const email = (NS.constants && NS.constants.SUPPORT_EMAIL) || "support@sonaris.cc";
+      supportRow.append(
+        ui.el("span", "um-muted", "Need help?"),
+        ui.el("span", "um-support-email", email),
+      );
+      popup.appendChild(supportRow);
     }
 
     function setOpen(next) {
