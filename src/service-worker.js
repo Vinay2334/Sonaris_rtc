@@ -156,7 +156,11 @@ async function maybeCloseOffscreen() {
     // Already closed (e.g. after a service-worker restart) — not an error.
     console.warn("offscreen close skipped:", e?.message || e);
   }
-  chrome.action.setIcon({ path: "icons/not-recording.png" });
+  try {
+    await chrome.action.setIcon({ path: "icons/logo-32.png" });
+  } catch (e) {
+    console.warn("toolbar icon reset failed:", e?.message || e);
+  }
 }
 
 // Reconcile in-memory state after a service-worker restart: the offscreen
@@ -210,7 +214,7 @@ async function stopTabRecording(tabId, { teardownOverlay = true } = {}) {
   if (teardownOverlay) await sendToTab(tabId, { type: "caption-teardown" });
   recordingTabs.delete(tabId);
   try {
-    await chrome.action.setIcon({ path: "icons/not-recording.png", tabId });
+    await chrome.action.setIcon({ path: "icons/logo-32.png", tabId });
   } catch (e) {
     // Tab may already be gone; the global icon reset in
     // maybeCloseOffscreen covers the last-session case.
@@ -268,7 +272,7 @@ async function startTabRecording(tabId, { initializeOverlay = true } = {}) {
     throw e;
   }
 
-  chrome.action.setIcon({ path: "/icons/recording.png", tabId });
+  chrome.action.setIcon({ path: "icons/logo-recording-32.png", tabId });
 
   // Reveal the tab's overlay immediately so the subtitle box (with its
   // buffering play button) is visible on icon click, before the backend's
@@ -552,7 +556,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (tabId != null) recordingTabs.delete(tabId);
       try {
         await chrome.action.setIcon({
-          path: "icons/not-recording.png",
+          path: "icons/logo-32.png",
           tabId,
         });
       } catch (e) {
@@ -634,7 +638,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         recordingTabs.delete(message.tabId);
         try {
           await chrome.action.setIcon({
-            path: "icons/not-recording.png",
+            path: "icons/logo-32.png",
             tabId: message.tabId,
           });
         } catch (e) {
