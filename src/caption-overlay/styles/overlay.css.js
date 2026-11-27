@@ -493,6 +493,34 @@
         animation: sonaris-pulse 1.6s ease-in-out infinite;
       }
 
+      /* Brand logo, bottom-right of the subtitle window. */
+      .sonaris-brand {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        margin-left: 4px;
+        opacity: 1;
+        outline: none;
+        border-radius: 8px;
+      }
+
+      .sonaris-brand img {
+        height: 28px;
+        width: auto;
+        display: block;
+        border-radius: 2px;
+        pointer-events: none;
+      }
+
+      .sonaris-brand:hover {
+        opacity: 1;
+        filter: brightness(1.2);
+      }
+
+      .sonaris-brand:focus-visible {
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+      }
+
       .status-dot.is-live {
         background: #34d399;
         animation: none;

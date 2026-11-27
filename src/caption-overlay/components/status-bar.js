@@ -106,6 +106,34 @@
     S.statusBar.appendChild(S.playBtn);
     S.statusBar.appendChild(S.retryBtn);
     S.statusBar.appendChild(statusWrap);
+
+    // Brand logo, bottom-right of the subtitle window. Links out to the
+    // Sonaris site in a new tab.
+    const brandLink = document.createElement("a");
+    brandLink.className = "sonaris-brand";
+    brandLink.href = "https://sonaris.cc";
+    brandLink.target = "_blank";
+    brandLink.rel = "noopener noreferrer";
+    brandLink.title = "Sonaris";
+    brandLink.setAttribute("aria-label", "Open Sonaris website");
+    const brandImg = document.createElement("img");
+    brandImg.alt = "Sonaris";
+    brandImg.draggable = false;
+    try {
+      brandImg.src =
+        (typeof chrome !== "undefined" &&
+          chrome?.runtime?.getURL?.("icons/logo-overlay.png")) ||
+        "icons/logo-overlay.png";
+    } catch (e) {
+      brandImg.src = "icons/logo-overlay.png";
+    }
+    brandLink.appendChild(brandImg);
+    brandLink.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+    S.statusBar.appendChild(brandLink);
+    S.brandLink = brandLink;
+
     S.container.appendChild(S.statusBar);
     NS.updateStatusUI();
   }

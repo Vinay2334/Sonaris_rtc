@@ -29,7 +29,7 @@
   "host_permissions": ["http://127.0.0.1:8000/*", "https://*.supabase.co/*", "https://captifylanding.netlify.app/*", "https://floral-dust-d2f5.vinaybhardwaj2334.workers.dev/*", "https://api.sonaris.cc/*"],
   "web_accessible_resources": [
     {
-      "resources": ["recorder-processor.js"],
+      "resources": ["recorder-processor.js", "icons/logo-overlay.png"],
       "matches": ["<all_urls>"]
     }
   ]

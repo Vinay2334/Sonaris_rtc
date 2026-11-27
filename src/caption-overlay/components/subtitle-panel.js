@@ -47,6 +47,7 @@
       S.retryBtn = null;
       S.statusText = null;
       S.statusDot = null;
+      S.brandLink = null;
       S.userMenu?.destroy();
       S.userMenu = null;
       S.signInGate?.destroy();
@@ -105,6 +106,7 @@
     S.retryBtn = null;
     S.statusText = null;
     S.statusDot = null;
+    S.brandLink = null;
     S.userMenu = null;
     S.signInGate = null;
     S.unsubscribeAuth = null;

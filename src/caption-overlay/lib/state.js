@@ -13,6 +13,7 @@
     currentLine: null, currentItemId: null, visible: false, isClosing: false,
     hideTimeout: null, paused: false, buffering: true, statusBar: null,
     playBtn: null, retryBtn: null, statusText: null, statusDot: null,
+    brandLink: null,
     userMenu: null, signInGate: null, unsubscribeAuth: null,
     authLoaded: false, authSignedIn: false, connStatus: "unknown",
     connMessage: null, connAttempt: null, connMaxAttempts: null,
